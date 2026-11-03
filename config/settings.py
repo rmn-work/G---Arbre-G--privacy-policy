@@ -1,7 +1,8 @@
 from pathlib import Path
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+# BASE_DIR pointe correctement vers le dossier 'backend' (où se trouve manage.py)
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-xlqoo6h475ey@b664d=&z8p8ev--z@wjtlg&rgyeydam*!6ws%'
 DEBUG = True
@@ -39,7 +40,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'backend' / 'templates',
+            BASE_DIR / 'templates',  # Pointe directement vers backend/templates
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -83,7 +84,7 @@ LANGUAGES = [
 ]
 
 LOCALE_PATHS = [
-    BASE_DIR / 'backend' / 'locale',
+    BASE_DIR / 'locale',  # Pointe vers backend/locale
 ]
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'fr'
@@ -91,10 +92,8 @@ MODELTRANSLATION_TRANSLATION_FILES = (
     'famille.translation',
 )
 
-# --- Configuration mise à jour ---
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-# ---------------------------------
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
