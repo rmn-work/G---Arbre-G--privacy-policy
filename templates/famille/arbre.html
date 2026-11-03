@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block extra_css %}
+
+<style>
+    body {
+        background: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+                    url("{% static 'images/grandma.jpg' %}") no-repeat center center fixed;
+        background-size: contain;
+        background-color: #f0f0f0;
+    }
+
+    .tree-container {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 50px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="tree-container text-center">
+        <h1 class="display-4 fw-bold mb-4">🌳 {% trans "Notre Arbre Généalogique chez les GACUKUZI et GICECERO" %}</h1>
+        <hr class="my-4">
+
+        <div class="row text-start mt-4">
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-diagram-3"></i> {% trans "L'Arbre de notre Famille" %}</h5>
+                        <span class="badge bg-secondary">{% trans "Interactif (Glisser / Zoomer)" %}</span>
+                    </div>
+                    <div id="tree-network" style="height: 650px; background-color: #f8f9fa;"></div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0" id="panneau-titre"><i class="bi bi-person-card-text"></i> {% trans "Détails" %}</h5>
+                        <div class="dropdown" id="panneau-traduction-menu" style="display: none;">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-translate"></i> {% trans "Traduire" %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                                <li><a class="dropdown-item" href="#" onclick="translatePane('en')">Anglais (API)</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="translatePane('fr')">Français (API)</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="translatePane('ki')">Kirundi (API)</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body" id="details-panneau">
+                        <p class="text-muted">{% trans "Cliquez sur un membre de la famille pour voir son histoire, ses liens de parenté, et ses anecdotes." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+<script type="text/javascript">
+    var nodesData = {{ nodes_json|safe }};
+    var edgesData = {{ edges_json|safe }};
+    var currentMemberId = null;
+    var currentAnecdotesData = null;
+
+    var container = document.getElementById('tree-network');
+
+    var data = {
+        nodes: new vis.DataSet(nodesData),
+        edges: new vis.DataSet(edgesData)
+    };
+
+    var options = {
+        nodes: {
+            borderWidth: 4,
+            size: 40,
+            color: { border: '#222222', backgroundColor: '#666666' },
+            font: { color: '#000000', size: 14, face: 'Helvetica' }
+        },
+        edges: {
+            color: '#848484',
+            arrows: {
+                to: { enabled: true, scaleFactor: 0.8 }
+            },
+            smooth: { type: 'cubicBezier', forceDirection: 'vertical', roundness: 0.4 }
+        },
+        layout: {
+            hierarchical: {
+                enabled: true,
+                direction: 'UD',
+                sortMethod: 'directed',
+                nodeSpacing: 200,
+                levelSeparation: 150,
+                parentCentralization: true
+            }
+        },
+        physics: false
+    };
+
+    var network = new vis.Network(container, data, options);
+
+    network.on("click", function (params) {
+        if (params.nodes.length > 0) {
+            var nodeId = params.nodes[0];
+            currentMemberId = nodeId;
+            loadMemberData(nodeId);
+        }
+    });
+
+    function loadMemberData(personneId) {
+        var panneau = document.getElementById('details-panneau');
+        panneau.innerHTML = '<div class="text-center p-3"><div class="spinner-border text-primary" role="status"></div><br><span class="text-muted text-xs">Chargement...</span></div>';
+
+        Promise.all([
+            fetch(`/famille/ajax/load_anecdotes/${personneId}/`)
+                .then(res => res.ok ? res.json() : { anecdotes: [] }),
+            fetch(`/famille/ajax/load_relations/${personneId}/`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Erreur serveur");
+                    return res.json();
+                })
+                .catch(err => {
+                    console.error("Erreur chargement relations:", err);
+                    return null;
+                })
+        ]).then(([anecdotesResp, relationsResp]) => {
+            currentAnecdotesData = anecdotesResp.anecdotes || [];
+
+            var membre = nodesData.find(n => n.id === personneId);
+            if (membre) {
+                document.getElementById('panneau-titre').innerHTML = `<i class="bi bi-person-fill"></i> ${membre.label}`;
+                document.getElementById('panneau-traduction-menu').style.display = 'block';
+            }
+
+            // Injection de la langue active de Django ('fr' ou 'en')
+            buildDetailsPane('{{ request.LANGUAGE_CODE }}', relationsResp);
+        });
+    }
+
+    function buildDetailsPane(langCode = 'fr', relationsData = null) {
+        var panneau = document.getElementById('details-panneau');
+        panneau.innerHTML = '';
+
+        // Textes traduits dynamiquement selon la langue
+        var t = {
+            familleProche: langCode === 'en' ? 'Close Family' : 'Famille Proche',
+            pere: langCode === 'en' ? 'Father' : 'Père',
+            mere: langCode === 'en' ? 'Mother' : 'Mère',
+            inconnu: langCode === 'en' ? 'Unknown' : 'Inconnu',
+            inconnue: langCode === 'en' ? 'Unknown' : 'Inconnue',
+            freresSoeurs: langCode === 'en' ? 'Brothers & Sisters' : 'Frères & Sœurs',
+            aucun: langCode === 'en' ? 'None' : 'Aucun',
+            onclesTantes: langCode === 'en' ? 'Uncles & Aunts' : 'Oncles & Tantes',
+            raconterAnecdote: langCode === 'en' ? 'Tell an Anecdote' : 'Raconter une Anecdote',
+            jeSuisEnfant: langCode === 'en' ? 'I am their Child' : 'Je suis son Enfant',
+            ajouterEnfant: langCode === 'en' ? 'Add a Child' : 'Lui ajouter un Enfant'
+        };
+
+        if (relationsData) {
+            var relationsContainer = document.createElement('div');
+            relationsContainer.className = 'mb-3 p-3 bg-light border rounded shadow-sm';
+
+            var pereTxt = relationsData.parents?.pere || t.inconnu;
+            var mereTxt = relationsData.parents?.mere || t.inconnue;
+            var fratrieTxt = relationsData.fratrie?.length ? relationsData.fratrie.join(', ') : t.aucun;
+
+            relationsContainer.innerHTML = `
+                <h6 class="text-primary mb-2"><i class="bi bi-people-fill"></i> ${t.familleProche}</h6>
+                <ul class="text-sm list-unstyled ms-2 mb-3">
+                    <li><b>${t.pere} :</b> ${pereTxt}</li>
+                    <li><b>${t.mere} :</b> ${mereTxt}</li>
+                </ul>
+
+                <h6 class="text-primary mb-2"><i class="bi bi-person-lines-fill"></i> ${t.freresSoeurs}</h6>
+                <p class="text-sm ms-2 mb-3">${fratrieTxt}</p>
+
+                <h6 class="text-primary mb-2"><i class="bi bi-diagram-2"></i> ${t.onclesTantes}</h6>
+                <ul class="text-sm ms-2 mb-0">
+                    ${relationsData.oncles_tantes?.length
+                        ? relationsData.oncles_tantes.map(ot => `<li>${ot.nom} <span class="text-muted">(${ot.relation} ${ot.cote})</span></li>`).join('')
+                        : `<li>${t.aucun}</li>`}
+                </ul>
+            `;
+            panneau.appendChild(relationsContainer);
+            panneau.appendChild(document.createElement('hr'));
+        }
+
+        var anecdotes = currentAnecdotesData;
+        var anecdoteContainer = document.createElement('div');
+        anecdoteContainer.id = 'anecdotes-container';
+        anecdoteContainer.style = 'max-height: 250px; overflow-y: auto; padding: 5px;';
+
+        if (anecdotes.length === 0) {
+            var msgVide = langCode === 'en'
+                ? "There are no anecdotes about this person yet.<br>Be the first to tell a story!"
+                : "Il n'y a pas encore d'anecdotes sur cette personne.<br>Soyez le premier à lui raconter une histoire !";
+            anecdoteContainer.innerHTML = `<p class="text-muted text-xs text-center p-3">${msgVide}</p>`;
+        } else {
+            anecdotes.forEach((anc, index) => {
+                var encadre = document.createElement('div');
+                encadre.className = 'card shadow-sm mb-2';
+                encadre.style = 'background-color: #fcfcfc; border-radius: 10px;';
+
+                var contePar = langCode === 'en' ? 'Told by' : 'Contée par';
+                var leTxt = langCode === 'en' ? 'on' : 'le';
+
+                encadre.innerHTML = `
+                    <div class="card-body p-2">
+                        <p class="mb-2 text-sm text-dark font-normal" id="anecdote-texte-${index}">${anc.contenu}</p>
+                        <p class="text-xs text-muted mb-0">${contePar} <span class="font-bold text-dark">${anc.signataire}</span> ${leTxt} ${anc.date}</p>
+                    </div>
+                `;
+                anecdoteContainer.appendChild(encadre);
+            });
+        }
+        panneau.appendChild(anecdoteContainer);
+
+        var actionContainer = document.createElement('div');
+        actionContainer.innerHTML = `
+            <hr>
+            <div class="d-grid gap-2 mt-3">
+                <a href="/famille/raconter_anecdote/${currentMemberId}/" class="btn btn-sm btn-outline-dark">
+                    <i class="bi bi-pencil-square"></i> ${t.raconterAnecdote}
+                </a>
+                <a href="/famille/inscription/?lier_parent=${currentMemberId}" class="btn btn-sm btn-outline-success">
+                    <i class="bi bi-person-plus-fill"></i> ${t.jeSuisEnfant}
+                </a>
+                <a href="/famille/ajouter_enfant/${currentMemberId}/" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-plus-circle"></i> ${t.ajouterEnfant}
+                </a>
+            </div>
+        `;
+        panneau.appendChild(actionContainer);
+    }
+
+    function translatePane(targetLang) {
+        if (!currentMemberId || !currentAnecdotesData) return;
+
+        var anecdotes = currentAnecdotesData;
+        anecdotes.forEach((anc, index) => {
+            var origLang = anc.langue_code.split('-')[0];
+            var url = `/famille/ajax/traduire/?texte=${encodeURIComponent(anc.contenu)}&cible=${targetLang}&origine=${origLang}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById(`anecdote-texte-${index}`).innerText = data.texte_traduit;
+                });
+        });
+    }
+</script>
+{% endblock %}

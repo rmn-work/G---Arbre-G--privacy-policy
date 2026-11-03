@@ -1,0 +1,121 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Généalogie Familiale" %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        .navbar { z-index: 1000; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'accueil_arbre' %}">🌳 Famille GACUKUZI</a>
+
+            <div class="navbar-nav ms-auto align-items-center">
+                {% if user.is_authenticated %}
+
+                    <div class="user-menu-container" style="position: relative; display: inline-block;">
+                        <button id="menuBtn" onclick="toggleMenu()" style="background: none; border: none; color: #ffc107; font-weight: bold; cursor: pointer; font-size: 16px;">
+                            ☰ {% trans "Menu" %}
+                        </button>
+
+                        <div id="verticalMenu" style="display: none; position: absolute; right: 0; top: 35px; background: white; color: black; box-shadow: 0px 4px 12px rgba(0,0,0,0.15); border-radius: 8px; width: 250px; z-index: 1000; overflow: hidden; text-align: left;">
+
+                            <!-- En-tête avec salutation dynamique -->
+                            <div style="background: #2c3e50; color: white; padding: 15px;">
+                                <p id="salutationMsg" style="margin: 0; font-size: 14px; color: #bdc3c7;"></p>
+                                <p style="margin: 5px 0 0 0; font-weight: bold; font-size: 16px;">{{ user.username }}</p>
+                            </div>
+
+                            <!-- Liens du menu vertical -->
+                            <div style="display: flex; flex-direction: column; padding: 8px 0;">
+                                <a href="{% url 'accueil_arbre' %}" style="padding: 12px 20px; text-decoration: none; color: #333; display: block; border-bottom: 1px solid #f1f1f1;">
+                                    <i class="bi bi-diagram-3"></i> {% trans "Accueil (Arbre)" %}
+                                </a>
+                                <a href="{% url 'mon_profil' %}" style="padding: 12px 20px; text-decoration: none; color: #333; display: block; border-bottom: 1px solid #f1f1f1;">
+                                    <i class="bi bi-person"></i> {% trans "Mon Profil" %}
+                                </a>
+                                <a href="{% url 'album_famille' %}" style="padding: 12px 20px; text-decoration: none; color: #333; display: block; border-bottom: 1px solid #f1f1f1;">
+                                    <i class="bi bi-images"></i> {% trans "Album Photo" %}
+                                </a>
+
+                                <div style="border-top: 1px solid #f1f1f1; margin: 4px 0;"></div>
+
+                                <!-- Déconnexion par formulaire POST -->
+                                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" style="width: 100%; text-align: left; padding: 12px 20px; background: none; border: none; color: #e74c3c; font-weight: bold; cursor: pointer;">
+                                        <i class="bi bi-box-arrow-right"></i> {% trans "Déconnexion" %}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link">
+                        {% trans "Connexion" %}
+                    </a>
+                    <a href="{% url 'inscription' %}" class="nav-link btn btn-outline-light btn-sm px-3 ms-2">
+                        {% trans "S'inscrire" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function toggleMenu() {
+        var menu = document.getElementById('verticalMenu');
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('#menuBtn') && !event.target.closest('#verticalMenu')) {
+            var menu = document.getElementById('verticalMenu');
+            if (menu && menu.style.display === 'block') {
+                menu.style.display = 'none';
+            }
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        var heure = new Date().getHours();
+        var msg = "{% trans 'Bonjour' %}";
+
+        if (heure >= 12 && heure < 18) {
+            msg = "{% trans 'Bon après-midi' %}";
+        } else if (heure >= 18) {
+            msg = "{% trans 'Bonsoir' %}";
+        }
+
+        var salutationElement = document.getElementById('salutationMsg');
+        if (salutationElement) {
+            salutationElement.innerText = msg + ",";
+        }
+    });
+    </script>
+</body>
+</html>

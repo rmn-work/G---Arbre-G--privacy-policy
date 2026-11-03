@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="tree-container text-center">
+        <h1 class="display-5 fw-bold mb-4">{% trans "Raconter une Anecdote" %}</h1>
+        <hr class="my-4">
+
+        <div class="row text-start mt-4">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{% trans "Une petite histoire sur" %} <b>{{ personne }}</b></h5>
+                        <a href="{% url 'accueil_arbre' %}" class="btn btn-sm btn-outline-light">
+                            <i class="bi bi-arrow-left-circle"></i> {% trans "Retour à l'Arbre" %}
+                        </a>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <form method="post" class="mt-4">
+                            {% csrf_token %}
+
+                            <!-- IMPORTANT : Champ caché pour lier l'histoire à la bonne personne -->
+                            {{ form.personne_id }}
+
+                            <!-- LA FENÊTRE POUR ÉCRIRE L'HISTOIRE -->
+                            <div class="mb-3">
+                                {{ form.contenu }}
+                                {% if form.contenu.errors %}
+                                    <div class="text-danger small mt-1">{{ form.contenu.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- BOUTON DE PUBLICATION -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg w-100 shadow">
+                                    <i class="bi bi-plus-circle"></i> {% trans "Publier l'Anecdote dans l'Arbre" %}
+                                </button>
+                            </div>
+                        </form>
+
+                        <p class="text-xs text-muted mt-3 text-center">
+                            {% trans "L'histoire sera publiée et signée automatiquement de votre nom." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{% trans "Mon Profil" %}</h2>
+    <div class="card p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">{% trans "Enregistrer les modifications" %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

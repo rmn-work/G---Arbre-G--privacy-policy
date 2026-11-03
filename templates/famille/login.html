@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-6 col-lg-4 text-center">
+            <form action="{% url 'set_language' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ request.get_path }}">
+                <button type="submit" name="language" value="fr" class="btn btn-sm btn-outline-secondary">FR</button>
+                <button type="submit" name="language" value="en" class="btn btn-sm btn-outline-secondary">EN</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 text-center">
+
+                    <h2 class="mb-4">🌳 {% trans "Connexion" %}</h2>
+
+                    <p class="text-muted mb-4">{% trans "Veuillez vous connecter pour accéder à l'arbre généalogique de la famille." %}</p>
+
+                    <form method="POST" action="{% url 'login' %}">
+                        {% csrf_token %}
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="{% trans 'Nom d\'utilisateur' %}" required>
+                            <label for="username">{% trans "Nom d'utilisateur" %}</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="{% trans 'Mot de passe' %}" required>
+                            <label for="password">{% trans "Mot de passe" %}</label>
+                        </div>
+
+                        <button class="btn btn-primary w-100 py-2 mb-3" type="submit">{% trans "Se connecter" %}</button>
+
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </form>
+
+                    <hr>
+                    <p class="mb-0 text-sm">
+                        {% trans "Pas encore inscrit ?" %} <a href="{% url 'inscription' %}" class="text-decoration-none">{% trans "Créer un compte" %}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,323 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-20 05:14+0000\n"
+"PO-Revision-Date: 2026-07-20 06:10+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: English <en@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api/models.py:9
+msgid "Masculin"
+msgstr "Male"
+
+#: api/models.py:10
+msgid "Féminin"
+msgstr "Female"
+
+#: api/models.py:15
+msgid "Célibataire"
+msgstr "Single"
+
+#: api/models.py:16
+msgid "Marié(e)"
+msgstr "Married"
+
+#: api/models.py:17
+msgid "Veuf/Veuve"
+msgstr "Widowed"
+
+#: api/models.py:18
+msgid "Enfant"
+msgstr "Child"
+
+#: api/models.py:44
+msgid "Date inconnue"
+msgstr "Unknown date"
+
+#: api/models.py:50
+msgid "Français"
+msgstr "French"
+
+#: api/models.py:51
+msgid "Anglais"
+msgstr "English"
+
+#: api/models.py:74
+msgid "Inconnu"
+msgstr "Unknown"
+
+#: famille/forms.py:8 templates/famille/inscription.html:175
+msgid "Code Secret de la Famille"
+msgstr "Family Secret Code"
+
+#: famille/forms.py:9
+msgid "Entrez le code secret"
+msgstr "Enter the secret code"
+
+#: famille/forms.py:22 famille/forms.py:84
+msgid "Nom"
+msgstr "Last Name"
+
+#: famille/forms.py:23 famille/forms.py:85
+msgid "Prénom"
+msgstr "First Name"
+
+#: famille/forms.py:24
+msgid "Sexe"
+msgstr "Gender"
+
+#: famille/forms.py:25
+msgid "Statut matrimonial"
+msgstr "Marital Status"
+
+#: famille/forms.py:26
+msgid "Date de naissance"
+msgstr "Date of birth"
+
+#: famille/forms.py:27
+msgid "Est vivant"
+msgstr "Is alive"
+
+#: famille/forms.py:28
+msgid "Date de décès"
+msgstr "Date of death"
+
+#: famille/forms.py:29 famille/forms.py:87
+msgid "Biographie"
+msgstr "Biography"
+
+#: famille/forms.py:30
+msgid "Père"
+msgstr "Father"
+
+#: famille/forms.py:31
+msgid "Mère"
+msgstr "Mother"
+
+#: famille/forms.py:32
+msgid "Conjoint(e)"
+msgstr "Spouse"
+
+#: famille/forms.py:51
+msgid "Le code secret est incorrect. Vous ne pouvez pas rejoindre cet arbre."
+msgstr "The family secret code is incorrect. You cannot join this tree."
+
+#: famille/forms.py:63
+msgid "Contenu de l'anecdote"
+msgstr "Anecdote content"
+
+#: famille/forms.py:64
+msgid "Langue originale"
+msgstr "Original language"
+
+#: famille/forms.py:71
+msgid "Racontez une petite histoire sur cette personne..."
+msgstr "Tell a short story about this person..."
+
+#: famille/forms.py:86
+msgid "Photo de profil"
+msgstr "Profile picture"
+
+#: famille/forms.py:88
+msgid "Profession"
+msgstr "Profession"
+
+#: famille/forms.py:89
+msgid "Lieux de vie"
+msgstr "Places of residence"
+
+#: templates/base.html:7
+msgid "Généalogie Familiale"
+msgstr "Family Genealogy"
+
+#: templates/base.html:28
+msgid "Menu"
+msgstr "Menu"
+
+#: templates/base.html:42
+msgid "Accueil (Arbre)"
+msgstr "Home (Tree)"
+
+#: templates/base.html:45 templates/famille/profil.html:6
+msgid "Mon Profil"
+msgstr "My Profile"
+
+#: templates/base.html:48
+msgid "Album Photo"
+msgstr "Photo Album"
+
+#: templates/base.html:57
+msgid "Déconnexion"
+msgstr "Log out"
+
+#: templates/base.html:65 templates/famille/login.html:23
+msgid "Connexion"
+msgstr "Log in"
+
+#: templates/base.html:68
+msgid "S'inscrire"
+msgstr "Sign up"
+
+#: templates/base.html:106
+msgid "Bonjour"
+msgstr "Good morning"
+
+#: templates/base.html:109
+msgid "Bon après-midi"
+msgstr "Good afternoon"
+
+#: templates/base.html:111
+msgid "Bonsoir"
+msgstr "Good evening"
+
+#: templates/famille/ajouter_enfant.html:10
+msgid "Ajouter un Enfant à"
+msgstr "Add a child to"
+
+#: templates/famille/ajouter_enfant.html:21
+msgid "Enregistrer l'enfant"
+msgstr "Save child"
+
+#: templates/famille/ajouter_enfant.html:24 templates/famille/album.html:73
+msgid "Annuler"
+msgstr "Cancel"
+
+#: templates/famille/album.html:8
+msgid "Album de Famille"
+msgstr "Family Album"
+
+#: templates/famille/album.html:11
+msgid "Ajouter une photo"
+msgstr "Add a photo"
+
+#: templates/famille/album.html:46
+msgid "L'album est vide. Soyez le premier à ajouter un souvenir !"
+msgstr "The album is empty. Be the first to add a memory!"
+
+#: templates/famille/album.html:57
+msgid "Ajouter un souvenir"
+msgstr "Add a memory"
+
+#: templates/famille/album.html:64
+msgid "Sélectionnez une image"
+msgstr "Select an image"
+
+#: templates/famille/album.html:68
+msgid "Légende (facultatif)"
+msgstr "Caption (optional)"
+
+#: templates/famille/album.html:74
+msgid "Mettre en ligne"
+msgstr "Upload"
+
+#: templates/famille/arbre.html:27
+msgid "Notre Arbre Généalogique chez les GACUKUZI et GICECERO"
+msgstr "Our Family Tree at the GACUKUZI and GICECERO"
+
+#: templates/famille/arbre.html:34
+msgid "L'Arbre de notre Famille"
+msgstr "Our Family Tree"
+
+#: templates/famille/arbre.html:35
+msgid "Interactif (Glisser / Zoomer)"
+msgstr "Interactive (Drag / Zoom)"
+
+#: templates/famille/arbre.html:44
+msgid "Détails"
+msgstr "Details"
+
+#: templates/famille/arbre.html:47
+msgid "Traduire"
+msgstr "Translate"
+
+#: templates/famille/arbre.html:57
+msgid ""
+"Cliquez sur un membre de la famille pour voir son histoire, ses liens de "
+"parenté, et ses anecdotes."
+msgstr ""
+"Click on a family member to see their history, kinship links, and anecdotes."
+
+#: templates/famille/inscription.html:148 templates/famille/login.html:47
+msgid "Créer un compte"
+msgstr "Create an account"
+
+#: templates/famille/inscription.html:151
+msgid "Rejoignez la plateforme pour accéder à l'arbre généalogique."
+msgstr "Join the platform to access the family tree."
+
+#: templates/famille/inscription.html:163
+msgid "Veuillez corriger les erreurs ci-dessous."
+msgstr "Please correct the errors below."
+
+#: templates/famille/inscription.html:171
+msgid "Sécurité :"
+msgstr "Security:"
+
+#: templates/famille/inscription.html:171
+msgid "Le code secret familial est requis."
+msgstr "The family secret code is required."
+
+#: templates/famille/inscription.html:198
+msgid "Créer mon compte"
+msgstr "Create my account"
+
+#: templates/famille/inscription.html:203
+msgid "Déjà un compte ?"
+msgstr "Already have an account?"
+
+#: templates/famille/inscription.html:203 templates/famille/login.html:40
+msgid "Se connecter"
+msgstr "Sign in"
+
+#: templates/famille/login.html:25
+msgid ""
+"Veuillez vous connecter pour accéder à l'arbre généalogique de la famille."
+msgstr "Please log in to access the family tree."
+
+#: templates/famille/login.html:32
+msgid "Nom d'utilisateur"
+msgstr "Username"
+
+#: templates/famille/login.html:36 templates/famille/login.html:37
+msgid "Mot de passe"
+msgstr "Password"
+
+#: templates/famille/login.html:47
+msgid "Pas encore inscrit ?"
+msgstr "Not registered yet?"
+
+#: templates/famille/profil.html:11
+msgid "Enregistrer les modifications"
+msgstr "Save changes"
+
+#: templates/famille/raconter_anecdote.html:8
+msgid "Raconter une Anecdote"
+msgstr "Tell an Anecdote"
+
+#: templates/famille/raconter_anecdote.html:15
+msgid "Une petite histoire sur"
+msgstr "A short story about"
+
+#: templates/famille/raconter_anecdote.html:17
+msgid "Retour à l'Arbre"
+msgstr "Back to Tree"
+
+#: templates/famille/raconter_anecdote.html:41
+msgid "Publier l'Anecdote dans l'Arbre"
+msgstr "Publish Anecdote in the Tree"
+
+#: templates/famille/raconter_anecdote.html:47
+msgid "L'histoire sera publiée et signée automatiquement de votre nom."
+msgstr "The story will be published and automatically signed with your name."
